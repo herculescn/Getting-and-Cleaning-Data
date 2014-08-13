@@ -11,7 +11,7 @@ The code in run_analysis.R does the following.
 Here are the data for the project: 
 https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip 
 
-## Get feature name of the measurements on the mean and standard deviation for each measurement. 
+### Get feature name of the measurements on the mean and standard deviation for each measurement. 
 ```
 featureInfo <- read.table("UCI HAR Dataset/features.txt",stringsAsFactors =FALSE)
 count<- 1
@@ -33,13 +33,15 @@ for (i in 1: length(featureInfo[,1])){
 colNames[count] <- "ActivityName"
 ```
 
-## Extracts only the measurements on the mean and standard deviation for each measurement
-## and merges the training and the test sets to create one data set.
+### Extracts only the measurements on the mean and standard deviation for each measurement and merges the training and the test sets to create one data set.
+```
 testData <- read.table("UCI HAR Dataset/test/X_test.txt")
 trainData <- read.table("UCI HAR Dataset/train/X_train.txt")
 mergedData <- rbind(testData[,colNums],trainData[,colNums])
+```
 
-## Uses descriptive activity names to name the activities in the data set
+### Uses descriptive activity names to name the activities in the data set
+```
 # read acciveity names
 activityName <- read.table("UCI HAR Dataset/activity_labels.txt", stringsAsFactors =FALSE)
 # get active label for each item of merged data
@@ -52,33 +54,24 @@ testAndTraningActivityName<- activityName[,2][testAndTraningLabels[,1]]
 
 # name the activities in the data set
 dataSet <- cbind(mergedData,testAndTraningActivityName)
-
-## Appropriately labels the data set with descriptive variable names. 
+```
+### Appropriately labels the data set with descriptive variable names. 
+```
 names(dataSet)<- colNames
+```
 
-
-
-## Creates a second, independent tidy data set with the average of each variable for each activity and each subject. 
+### Creates a second, independent tidy data set with the average of each variable for each activity and each subject. 
+```
 # get test and train subject labels
 subjectLabels <- 
   rbind(read.table("UCI HAR Dataset/test/subject_test.txt"),
         read.table("UCI HAR Dataset/train/subject_train.txt"))
-
+# paste activity name and subject for average
 activityAndSubjec <- paste( testAndTraningActivityName, subjectLabels[,1])
 
-#print(factor(activityAndSubjec) )
-#print(dataSet)
-
-#print(split(dataSet, factor(activityAndSubjec)))
 # get the average of each variable for each activity and each subject. 
 avgData <- lapply(split(dataSet, factor(activityAndSubjec)),
        function(x) colMeans(x[, colNames[1:count - 1]]))
-#
+# write the result to file
 write.table(avgData, "avgData.txt", row.name=FALSE)
-
-#print(avgData)
-## Uses descriptive activity names to name the activities in the data set
-
-# print(mergedData)
-# print(class(testData))
-# print(class(mergedData))
+```
