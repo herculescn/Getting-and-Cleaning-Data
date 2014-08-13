@@ -64,9 +64,3 @@ avgData <- lapply(split(dataSet, factor(activityAndSubjec)),
 #
 write.table(avgData, "avgData.txt", row.name=FALSE)
 
-#print(avgData)
-## Uses descriptive activity names to name the activities in the data set
-
-# print(mergedData)
-# print(class(testData))
-# print(class(mergedData))
